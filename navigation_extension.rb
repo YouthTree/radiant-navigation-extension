@@ -7,7 +7,7 @@ class NavigationExtension < Radiant::Extension
   url "http://github.com/squaretalent/radiant-navigation-extension"
   
   def activate
-    Page.send :include, NavigationTags
+    Page.send :include, Navigation::Tags::Core
   end
   
 end
