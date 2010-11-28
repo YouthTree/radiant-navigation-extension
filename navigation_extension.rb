@@ -2,9 +2,9 @@
 # require_dependency 'application'
 
 class NavigationExtension < Radiant::Extension
-  version "2.0.1"
+  version YAML::load_file(File.join(File.dirname(__FILE__), 'VERSION'))
   description "Makes building navigations much easier."
-  url "http://github.com/squaretalent/radiant-navigation-extension"
+  url "http://github.com/dirkkelly/radiant-navigation-extension"
   
   def activate
     Page.send :include, Navigation::Tags::Core
