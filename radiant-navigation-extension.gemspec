@@ -25,7 +25,8 @@ Gem::Specification.new do |s|
     "lib/navigation/tags/core.rb",
     "lib/navigation/tags/helpers.rb",
     "lib/radiant-navigation-extension.rb",
-    "navigation_extension.rb"
+    "navigation_extension.rb",
+    "radiant-navigation-extension.gemspec"
   ]
   s.homepage = %q{http://github.com/dirkkelly/radiant-navigation-extension}
   s.require_paths = ["lib"]
