@@ -40,8 +40,8 @@ module Navigation
           css_class = [("current" if tag.locals.page == root), "first"].compact
           first_set = true
           
-          tree << %{<li class="#{css_class.join(' ') unless css_class.empty?}" id="#{(root.slug == '/' ? 'home' : root.slug) if tag.attr['ids_for_lis']}">}
-          tree << %{<a href="#{root.url}" id="link_#{(child_page.slug == '/' ? 'home' : root.slug) if tag.attr['ids_for_links']}">}
+          tree << %{<li#{" class='#{css_class.join(' ')}'" unless css_class.empty?}#{" id='#{(root.slug == '/' ? 'home' : root.slug)}'" if tag.attr['ids_for_lis']}>}
+          tree << %{<a href="#{root.url}"#{" id='link_#{(child_page.slug == '/' ? 'home' : root.slug)}'" if tag.attr['ids_for_links']}>}
           tree << %{#{root.breadcrumb}}
           tree << %{</a></li>}
         end
@@ -53,6 +53,13 @@ module Navigation
           end
         end
         
+        ['only','except','expand_all','include_root'].each do |key| #'root','depth'
+          tag.attr.delete(key) 
+        end
+        
+        tag.attr.delete('only')
+        tag.attr.delete('except')
+        
         if tag.attr
           html_options = tag.attr.stringify_keys
           tag_options = tag_options(html_options)
@@ -60,9 +67,9 @@ module Navigation
           tag_options = nil
         end
         
-        %{<ul#{tag_options}>
+        %{<ol#{tag_options}>
         #{tree}
-        </ul>}
+        </ol>}
         
       end
       

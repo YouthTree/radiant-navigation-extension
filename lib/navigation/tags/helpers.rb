@@ -19,8 +19,8 @@ module Navigation
           css_class << "parent_of_current" if current_page.url.starts_with?(child_page.url) and current_page != child_page
           css_class.compact!
           
-          r =  %{<li class="#{css_class.join(' ') unless css_class.empty?}" id="nav_#{child_page.slug if tag.attr['ids_for_lis']}">}
-          r << %{<a href="#{child_page.url}" id="link_#{(child_page.slug == '/' ? 'home' : child_page.slug) if tag.attr['ids_for_links']}">}
+          r =  %{<li#{" class='#{css_class.join(' ')}'" unless css_class.empty?}#{" id='nav_#{child_page.slug}'" if tag.attr['ids_for_lis']}>}
+          r << %{<a href="#{child_page.url}"#{" id='link_#{(child_page.slug == '/' ? 'home' : child_page.slug)}'" if tag.attr['ids_for_links']}>}
           r << %{#{child_page.breadcrumb}}
           r << %{</a>}
           
