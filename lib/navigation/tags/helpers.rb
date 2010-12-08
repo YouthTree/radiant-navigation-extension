@@ -27,7 +27,7 @@ module Navigation
           allowed_children = child_page.children.delete_if{ |c| not_allowed?(tag,c) }
           
           if tag.attr['expand_all'] or current_page.url.starts_with?(child_page.url)
-            if allowed_children.present? and depth.present? and child_page.class_name != 'ArchivePage'
+            if allowed_children.present? and depth.to_i > 0 and child_page.class_name != 'ArchivePage'
               r << %{<ul>}
               child_page.children.each do |child|
                 depth -= 1

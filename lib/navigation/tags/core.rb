@@ -67,9 +67,9 @@ module Navigation
           tag_options = nil
         end
         
-        %{<ol#{tag_options}>
+        %{<ul#{tag_options}>
         #{tree}
-        </ol>}
+        </ul>}
         
       end
       
