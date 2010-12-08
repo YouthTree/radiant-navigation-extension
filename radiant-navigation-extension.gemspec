@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{radiant-navigation-extension}
-  s.version = "2.0.2"
+  s.version = "2.0.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Phil Schilter", "Dirk Kelly"]
-  s.date = %q{2010-11-28}
+  s.date = %q{2010-12-08}
   s.description = %q{Navigation provides a way to generate navigation (with useful classes)}
   s.email = %q{dk@dirkkelly.com}
   s.extra_rdoc_files = [
