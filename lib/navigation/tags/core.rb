@@ -21,6 +21,7 @@ module Navigation
 
         * @depth@ defaults to 1, which means no sub-ul's, set to 2 or more for a nested list
         * @expand_all@ defaults to false, enable this to have all li's create sub-ul's of their children, i.o. only the currently active li
+        * @order@ - How to order the first row, either asc or desc.
 
         * @only@ a string or regular expresssion. only pages whose urls match this are included
         * @except@ a string or regular expresssion. pages whose urls match this are not shown. except will override only. use to eliminate non-content file-types
@@ -29,38 +30,44 @@ module Navigation
       }
 
       tag "nav" do |tag|
-        root_url = tag.attr.delete('root').to_s || "/"
-        root     = Page.find_by_url(root_url)
-        depth    = tag.attr.delete('depth').to_i || 1
-        tree     = ""
+        root_url  = (tag.attr.delete('root') || "/").to_s
+        root      = Page.find_by_url(root_url)
+        depth     = (tag.attr.delete('depth') || 1).to_i
+        ascending = (tag.attr.delete('order') || 'asc') == 'asc'
+        tree      = ""
         
         raise NavTagError, "No page found at \"#{root_url}\" to build navigation from." if root.class_name.eql?('FileNotFoundPage')
         
-        if tag.attr['include_root']
+        options = {
+          :include_root  => (tag.attr.delete('include_root') == 'true'),
+          :expand_all    => (tag.attr.delete('expand_all') == 'true'),
+          :only          => tag.attr.delete('only'),
+          :except        => tag.attr.delete('except'),
+          :ids_for_lis   => (tag.attr.delete('ids_for_lis') == 'true'),
+          :ids_for_links => (tag.attr.delete('ids_for_links') == 'true'),
+        }
+
+        first_set = false
+
+        if options[:include_root]
           css_class = [("current" if tag.locals.page == root), "first"].compact
           first_set = true
           
-          tree << %{<li#{" class='#{css_class.join(' ')}'" unless css_class.empty?}#{" id='#{(root.slug == '/' ? 'home' : root.slug)}'" if tag.attr['ids_for_lis']}>}
-          tree << %{<a href="#{root.url}"#{" id='link_#{(child_page.slug == '/' ? 'home' : root.slug)}'" if tag.attr['ids_for_links']}>}
+          tree << %{<li#{" class='#{css_class.join(' ')}'" unless css_class.empty?}#{" id='#{(root.slug == '/' ? 'home' : root.slug)}'" if options[:ids_for_lis]}>}
+          tree << %{<a href="#{root.url}"#{" id='link_#{(child_page.slug == '/' ? 'home' : root.slug)}'" if optionbs[:ids_for_links]}>}
           tree << %{#{root.breadcrumb}}
           tree << %{</a></li>}
         end
         
-        for child in root.children
-          unless Helpers.not_allowed?(tag,child)
-            depth -= 1            
-            tree  << Helpers.sub_nav(tag, child, depth, first_set)
-          end
+        children = root.children
+        children = children.reverse unless ascending
+        children.each do |child|
+          next if Helpers.not_allowed? tag, child, options
+          tree  << Helpers.sub_nav(tag, child, depth - 1, options, first_set)
+          first_set = true
         end
         
-        ['only','except','expand_all','include_root'].each do |key| #'root','depth'
-          tag.attr.delete(key) 
-        end
-        
-        tag.attr.delete('only')
-        tag.attr.delete('except')
-        
-        if tag.attr
+        if tag.attr.present?
           html_options = tag.attr.stringify_keys
           tag_options = tag_options(html_options)
         else
